@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .build();
         //Set to chat view
         chatView.send(message);
-        sendRequest(chatView.getInputText() + " | " + latitude + " / " + longitude);
+        sendRequest(chatView.getInputText() + " \\ " + latitude + " \\ " + longitude);
         //Reset edit text
         chatView.setInputText("");
     }
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setMessageText(speech)
                             .build();
                     chatView.receive(receivedMessage);
-
+                    //add map
                 }
 
                 if(metadata.getIntentName().equals("top3_closest")) {
@@ -324,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     speech = speechList[0];
                     lat = Double.parseDouble(speechList[1]);
                     lng = Double.parseDouble(speechList[2]);
+                    position_cd = speechList[3];
 
                     final Message receivedMessage = new Message.Builder()
                             .setUser(droidKaigiBot)
@@ -331,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setMessageText(speech)
                             .build();
                     chatView.receive(receivedMessage);
+                    //add map
                 }
 
                 if(metadata.getIntentName().equals("top3")) {
@@ -360,9 +362,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 if(metadata.getIntentName().equals("status")) {
-//                    String url_so = "http://openapi.seoul.go.kr:8088/sample/xml/NanumcarCarList/1/5/"+position_cd+"/so";
-//                    NetworkTask networkTask = new NetworkTask(url_so, null, "socar");
-//                    networkTask.execute();
+                    String url_so = "http://openapi.seoul.go.kr:8088/sample/xml/NanumcarCarList/1/5/"+position_cd+"/so";
+                    NetworkTask networkTask = new NetworkTask(url_so, null, "socar");
+                    networkTask.execute();
 
                     String url_gr = "http://openapi.seoul.go.kr:8088/sample/xml/NanumcarCarList/1/5/"+position_cd+"/gr";
                     NetworkTask networkTask2 = new NetworkTask(url_gr, null, "gr");
@@ -376,38 +378,145 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     position_cd = "";
                 }
 
-                if(metadata.getIntentName().equals("search_toilet")) {
-                    String value = "37.12342;127.123456";
-                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
-                    startActivity(intent);
-
+                if(metadata.getIntentName().equals("spec_addr")) {
+                    String addr = speech;
+                    String url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/xml?input="+addr+"&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyD2h9IEq_ZZBVcPQ8OJl3cvUBDHZ2oo9UU";
+                    NetworkTask networkTask = new NetworkTask(url, null, "search");
+                    networkTask.execute();
                 }
 
-                //Update view to bot says
-//                if(layout) {
-////                    Log.i("chatMap", "chatMap");
-////                    MapViewFragmentNaver fragment1 = new MapViewFragmentNaver();
-////                    fragment1.setArguments(new Bundle());
-////                    android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-////                    FragmentTransaction fragmentTransaction = fm.beginTransaction();
-////                    fragmentTransaction.add(R.id.MapHere, fragment1);
-////                    fragmentTransaction.commit();
-//                } else {
-//                    Log.i("chat", "chat");
-//                    final Message receivedMessage = new Message.Builder()
-//                            .setUser(droidKaigiBot)
-//                            .setRightMessage(false)
-//                            .setMessageText(speech)
-//                            .build();
-//                    chatView.receive(receivedMessage);
-//                }
+                if(metadata.getIntentName().equals("spec_electric")){
+                    final String[] speechList = speech.split(";");
+                    Log.i(TAG, "intent name: " + metadata.getIntentName());
+                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
+                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
+                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
+                    Log.i(TAG, "Speech3(location.position_cd): " + speechList[3]);
+                    speech = speechList[0];
+                    lat = Double.parseDouble(speechList[1]);
+                    lng = Double.parseDouble(speechList[2]);
+                    position_cd = speechList[3];
 
-                final Message receivedMessage = new Message.Builder()
-                        .setUser(droidKaigiBot)
-                        .setRightMessage(false)
-                        .setMessageText("테스트")
-                        .build();
-                chatView.receive(receivedMessage);
+                    final Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+                    //add map
+                }
+
+                if(metadata.getIntentName().equals("spec_agency")){
+                    final String[] speechList = speech.split(";");
+                    Log.i(TAG, "intent name: " + metadata.getIntentName());
+                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
+                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
+                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
+                    Log.i(TAG, "Speech3(location.position_cd): " + speechList[3]);
+                    speech = speechList[0];
+                    lat = Double.parseDouble(speechList[1]);
+                    lng = Double.parseDouble(speechList[2]);
+                    position_cd = speechList[3];
+
+                    final Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+                    //add map
+                }
+
+                if(metadata.getIntentName().equals("closest_EVcharge")){
+                    final String[] speechList = speech.split(";");
+                    Log.i(TAG, "intent name: " + metadata.getIntentName());
+                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
+                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
+                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
+                    speech = speechList[0]+" 지도로 이동하여 표시합니다...";
+                    lat = Double.parseDouble(speechList[1]);
+                    lng = Double.parseDouble(speechList[2]);
+
+                    final Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+                    //add map
+                }
+
+                if(metadata.getIntentName().equals("search_toilet")) {
+                    final String[] speechList = speech.split(";");
+                    Log.i(TAG, "intent name: " + metadata.getIntentName());
+                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
+                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
+                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
+                    speech = speechList[0];
+                    lat = Double.parseDouble(speechList[1]);
+                    lng = Double.parseDouble(speechList[2]);
+
+                    String value = lat+";"+lng;
+                    Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
+                    //add map
+                }
+
+                if(metadata.getIntentName().equals("closest_park1")){
+                    final String[] speechList = speech.split(";");
+                    Log.i(TAG, "intent name: " + metadata.getIntentName());
+                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
+                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
+                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
+                    Log.i(TAG, "Speech3(location.name): " + speechList[3]);
+                    Log.i(TAG, "Speech4(location.etc): " + speechList[4]);
+                    speech = speechList[0] +" 주차장 이름: "+ speechList[3]+" , 정보: " + speechList[4];
+                    lat = Double.parseDouble(speechList[1]);
+                    lng = Double.parseDouble(speechList[2]);
+
+                    final Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+                    //add map
+                }
+
+                if(metadata.getIntentName().equals("closest_park0")){
+                    final String[] speechList = speech.split(";");
+                    Log.i(TAG, "intent name: " + metadata.getIntentName());
+                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
+                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
+                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
+                    Log.i(TAG, "Speech3(location.name): " + speechList[3]);
+                    Log.i(TAG, "Speech4(location.msg2): " + speechList[4]);
+                    speech = speechList[0] +" "+ speechList[4];
+                    lat = Double.parseDouble(speechList[1]);
+                    lng = Double.parseDouble(speechList[2]);
+
+                    Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+
+                    receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText("지도로 이동하여 표시합니다...")
+                            .build();
+                    chatView.receive(receivedMessage);
+
+                    //add map
+                }
             }
         });
     }
@@ -516,6 +625,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     s += "Cnt = " + cnt.item(0).getChildNodes().item(0).getNodeValue() + "\n";
                     Log.i(TAG, s);
                 }
+                if(!nanum_so_code.equals("INFO-200") ){
+                    speech = "현재 주차장의 쏘카 현황은 총 차량 대수: " + nanum_so_allCnt + "대, 이용 가능한 차량 대수: " + nanum_so_cnt + "대 입니다.";
+                    final Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+                }
             }
 
             if(type.equals("gr")) {
@@ -540,16 +658,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     s += "Cnt = " + cnt.item(0).getChildNodes().item(0).getNodeValue() + "\n";
                     Log.i(TAG, s);
                 }
-                if(!nanum_gr_code.equals("INFO-200")) {
-                    speech = "현재 주차장의 그린카 현황은 총 차량 대수: " + nanum_gr_allCnt + "대, 이용 가능한 차량 대수: " + nanum_gr_cnt + "입니다.";
+
+                if (!nanum_gr_code.equals("INFO-200") ){
+                    speech = "현재 주차장의 그린카 현황은 총 차량 대수: " + nanum_gr_allCnt + "대, 이용 가능한 차량 대수: " + nanum_gr_cnt + "대 입니다.";
                     final Message receivedMessage = new Message.Builder()
                             .setUser(droidKaigiBot)
                             .setRightMessage(false)
                             .setMessageText(speech)
                             .build();
                     chatView.receive(receivedMessage);
+                }
+            }
+
+            if(type.equals("search")){
+                NodeList statusList = doc.getElementsByTagName("status");
+                String statusNode = statusList.item(0).getChildNodes().item(0).getNodeValue();
+                Log.i(TAG, "status: "+statusNode);
+                if (statusNode.equals("OK") ){
+                    NodeList resList = doc.getElementsByTagName("location");
+                    Node resNode = resList.item(0);
+                    Element resElmt = (Element) resNode;
+                    NodeList lat = resElmt.getElementsByTagName("lat");
+                    s += "lat = " + lat.item(0).getChildNodes().item(0).getNodeValue() + "\n";
+                    String lat_ = lat.item(0).getChildNodes().item(0).getNodeValue();
+                    NodeList lng = resElmt.getElementsByTagName("lng");
+                    s += "lng = " + lng.item(0).getChildNodes().item(0).getNodeValue() + "\n";
+                    String lng_ = lng.item(0).getChildNodes().item(0).getNodeValue();
+                    Log.i(TAG, s);
+
+                    speech = "찾았어요 ! 지도로 이동하여 표시합니다...";
+                    final Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+                    //add map
                 } else {
-                    speech = "정보를 알 수 없습니다. 다시 시도해주세요.";
+                    speech = "그런 장소는 찾지 못했어요 ㅠㅠ... 다시 입력해주세요 !";
+                    final Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
                 }
             }
 

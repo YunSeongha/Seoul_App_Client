@@ -9,91 +9,126 @@ import com.nhn.android.maps.NMapActivity;
 import com.nhn.android.maps.NMapController;
 import com.nhn.android.maps.NMapView;
 import com.nhn.android.maps.maplib.NGeoPoint;
+import com.nhn.android.maps.nmapmodel.NMapError;
 import com.nhn.android.maps.overlay.NMapPOIdata;
 import com.nhn.android.maps.overlay.NMapPOIitem;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 import com.nhn.android.mapviewer.overlay.NMapResourceProvider;
 
-public class MapActivity extends NMapActivity {
-
-    private NMapView mMapView;// 지도 화면 View
+public class MapActivity extends NMapActivity
+        implements NMapView.OnMapStateChangeListener, NMapPOIdataOverlay.OnStateChangeListener {
     private final String CLIENT_ID = "n7AHSzZ7rbcixSSSEgEz";// 애플리케이션 클라이언트 아이디 값
+
     private NMapController mMapController;
+    private NMapView mMapView;
+
     private NMapResourceProvider nMapResourceProvider;
     private NMapOverlayManager mapOverlayManager;
+
+    private double[] lat;
+    private double[] lng;
+
+    public static final String TAG = MapActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Intent intent = getIntent();
         String s = intent.getExtras().getString("info");
-        double lat = Double.parseDouble(s.split(";")[0]);
-        double lng = Double.parseDouble(s.split(";")[1]);
+        String sList[] = s.split(";");
+        for(int i=0; i<sList.length; i++) {
+            if(i%2==0) {
+                lat[i/2] = Double.parseDouble(sList[i]);
+            }else {
+                lng[i/2] = Double.parseDouble(sList[i]);
+            }
+        }
+        for(int i=0; i<sList.length; i++) {
+            Log.i(TAG, "lat: " + Double.toString(lat[i]) + ", lng: " + Double.toString(lng[i]));
+        }
+
         mMapView = new NMapView(this);
-        // create resource provider
         setContentView(mMapView);
 
+        init();
 
-        Log.i("TAG", "mapview");
+        nMapResourceProvider = new NMapViewerResourceProvider(this);
+        mapOverlayManager = new NMapOverlayManager(this, mMapView, nMapResourceProvider);
+
+        mMapController = mMapView.getMapController();
+        mMapController.setMapCenter(new NGeoPoint(lng[0], lat[0]), 11);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapView.setBuiltInZoomControls(true, null);
+        mMapView.setOnMapStateChangeListener(this);
+        moveMapCenter();
+    }
+
+    private void init(){
         mMapView.setClientId(CLIENT_ID); // 클라이언트 아이디 값 설정
         mMapView.setClickable(true);
         mMapView.setEnabled(true);
-        Log.i("TAG", "enable");
         mMapView.setFocusable(true);
         mMapView.setFocusableInTouchMode(true);
         mMapView.setScalingFactor(1.7f);
         mMapView.requestFocus();
-
-        mMapController = mMapView.getMapController();
-        mMapController.setMapCenter(new NGeoPoint(lng, lat), 11);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setMarker();
-            }
-        }, 5000);
     }
 
-    private void setMarker() {
-        Intent intent = getIntent();
-        String s = intent.getExtras().getString("info");
-        double lat = Double.parseDouble(s.split(";")[0]);
-        double lng = Double.parseDouble(s.split(";")[1]);
+    @Override
+    public void onMapInitHandler(NMapView nMapView, NMapError nMapError) {
+        if (nMapError == null) {
+            moveMapCenter();
+        } else {
+            Log.e("map init error", nMapError.message);
+        }
+    }
 
-        int markerId = NMapPOIflagType.PIN;
+    private void moveMapCenter() {
+        NGeoPoint currentPoint = new NGeoPoint(lng[0], lat[0]);
+        mMapController.setMapCenter(currentPoint);
 
-// set POI data
         NMapPOIdata poiData = new NMapPOIdata(2, nMapResourceProvider);
-        poiData.beginPOIdata(2);
-        poiData.addPOIitem(lng, lat, "Toilet", markerId, 0);
-        Log.i("lat,lang", "lat :" + lat + "lng" + lng);
+        for(int i=0; i<lat.length; i++) {
+            poiData.addPOIitem(lng[i], lat[i], "스폿스폿 !", NMapPOIflagType.PIN, 0);
+        }
         poiData.endPOIdata();
 
-        Log.i("poiData", "poiData :" + poiData);
-
-// create POI data overlay
         NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);
         poiDataOverlay.showAllPOIdata(0);
+        poiDataOverlay.setOnStateChangeListener(this);
+    }
 
+    @Override
+    public void onMapCenterChange(NMapView nMapView, NGeoPoint nGeoPoint) {
 
     }
 
-    private NMapPOIdataOverlay.OnStateChangeListener onPOIdataStateChangeListener = new NMapPOIdataOverlay.OnStateChangeListener() {
-        @Override
-        public void onFocusChanged(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
+    @Override
+    public void onMapCenterChangeFine(NMapView nMapView) {
 
-        }
+    }
 
-        @Override
-        public void onCalloutClick(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
-            if (nMapPOIitem != null) {
-                Log.e("TAG", "onFocusChanged: " + nMapPOIitem.toString());
-            } else {
-                Log.e("TAG", "onFocusChanged: ");
+    @Override
+    public void onZoomLevelChange(NMapView nMapView, int i) {
 
-            }
-        }
-    };
+    }
+
+    @Override
+    public void onAnimationStateChange(NMapView nMapView, int i, int i1) {
+
+    }
+
+    @Override
+    public void onFocusChanged(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
+
+    }
+
+    @Override
+    public void onCalloutClick(NMapPOIdataOverlay nMapPOIdataOverlay, NMapPOIitem nMapPOIitem) {
+
+    }
 }
