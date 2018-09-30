@@ -618,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
                 }
                 if(!metadata.getIntentName().equals("closest_park0") && !metadata.getIntentName().equals("closest_park1") && !metadata.getIntentName().equals("search_toilet")&&
-                !metadata.getIntentName().equals("closest_EVcharge")&&!metadata.getIntentName().equals("spec_agency")&&!metadata.getIntentName().equals("spec_electric")&&
+                !metadata.getIntentName().equals("closest_EVcharge")&&!metadata.getIntentName().equals("spec_agency")&&!metadata.getIntentName().equals("spec_electric")&&!metadata.getIntentName().equals("status")&&
                 !metadata.getIntentName().equals("spec_addr")&&!metadata.getIntentName().equals("top3")&&!metadata.getIntentName().equals("top3_closest")&&!metadata.getIntentName().equals("closest")){
                     Message receivedMessage = new Message.Builder()
                             .setUser(droidKaigiBot)
@@ -802,7 +802,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .build();
                     chatView.receive(receivedMessage);
                     //add map
-                    String value = lat_+";"+lng_;
+                    String value = lat_+";"+lng_+"찾으시는 곳 !";
                     Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
                     startActivity(intent);
                 } else {
