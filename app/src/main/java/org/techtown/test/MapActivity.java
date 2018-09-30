@@ -26,8 +26,14 @@ public class MapActivity extends NMapActivity
     private NMapResourceProvider nMapResourceProvider;
     private NMapOverlayManager mapOverlayManager;
 
-    private double[] lat;
-    private double[] lng;
+    private double lat;
+    private double lng;
+    private String addr;
+    private double lat1, lat2, lat3;
+    private double lng1, lng2, lng3;
+    private String addr1, addr2, addr3;
+
+    private int flag=0;
 
     public static final String TAG = MapActivity.class.getName();
 
@@ -36,17 +42,27 @@ public class MapActivity extends NMapActivity
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        String s = intent.getExtras().getString("info");
-        String sList[] = s.split(";");
-        for(int i=0; i<sList.length; i++) {
-            if(i%2==0) {
-                lat[i/2] = Double.parseDouble(sList[i]);
-            }else {
-                lng[i/2] = Double.parseDouble(sList[i]);
-            }
-        }
-        for(int i=0; i<sList.length; i++) {
-            Log.i(TAG, "lat: " + Double.toString(lat[i]) + ", lng: " + Double.toString(lng[i]));
+//        String s = intent.getExtras().getString("info");
+//        Log.i(TAG,intent.getExtras().getString("info1"));
+        if(intent.getExtras().getString("info1")==null || intent.getExtras().getString("info1").equals("")) {
+            String sList[] = intent.getExtras().getString("info").split(";");
+            lat = Double.parseDouble(sList[0]);
+            lng = Double.parseDouble(sList[1]);
+            addr = sList[2];
+            flag = 0;
+        } else {
+            String sList[] = intent.getExtras().getString("info1").split(";");
+            lat1 = Double.parseDouble(sList[0]);
+            lng1 = Double.parseDouble(sList[1]);
+            lat2 = Double.parseDouble(sList[2]);
+            lng2 = Double.parseDouble(sList[3]);
+            lat3 = Double.parseDouble(sList[4]);
+            lng3 = Double.parseDouble(sList[5]);
+            addr1 = sList[6];
+            addr2 = sList[7];
+            addr3 = sList[8];
+
+            flag = 1;
         }
 
         mMapView = new NMapView(this);
@@ -58,7 +74,13 @@ public class MapActivity extends NMapActivity
         mapOverlayManager = new NMapOverlayManager(this, mMapView, nMapResourceProvider);
 
         mMapController = mMapView.getMapController();
-        mMapController.setMapCenter(new NGeoPoint(lng[0], lat[0]), 11);
+        if(flag == 0){
+            mMapController.setMapCenter(new NGeoPoint(lng, lat), 11);
+        }
+        if(flag == 1){
+            mMapController.setMapCenter(new NGeoPoint(lng1, lat1), 11);
+        }
+
     }
     @Override
     public void onStart() {
@@ -74,7 +96,7 @@ public class MapActivity extends NMapActivity
         mMapView.setEnabled(true);
         mMapView.setFocusable(true);
         mMapView.setFocusableInTouchMode(true);
-        mMapView.setScalingFactor(1.7f);
+        mMapView.setScalingFactor(2.0f);
         mMapView.requestFocus();
     }
 
@@ -88,13 +110,26 @@ public class MapActivity extends NMapActivity
     }
 
     private void moveMapCenter() {
-        NGeoPoint currentPoint = new NGeoPoint(lng[0], lat[0]);
+        NGeoPoint currentPoint = null;
+        if(flag==0){
+            currentPoint = new NGeoPoint(lng, lat);
+        } else {
+            currentPoint = new NGeoPoint(lng1, lat1);
+        }
         mMapController.setMapCenter(currentPoint);
 
         NMapPOIdata poiData = new NMapPOIdata(2, nMapResourceProvider);
-        for(int i=0; i<lat.length; i++) {
-            poiData.addPOIitem(lng[i], lat[i], "스폿스폿 !", NMapPOIflagType.PIN, 0);
+        if(flag==0){
+            poiData.addPOIitem(lng, lat, addr, NMapPOIflagType.PIN, 0);
         }
+        if(flag==1){
+            poiData.addPOIitem(lng1, lat1, addr1, NMapPOIflagType.PIN, 0);
+            poiData.addPOIitem(lng2, lat2, addr2, NMapPOIflagType.PIN, 0);
+            poiData.addPOIitem(lng3, lat3, addr3, NMapPOIflagType.PIN, 0);
+        }
+//        for(int i=0; i<lat.length; i++) {
+//            poiData.addPOIitem(lng[i], lat[i], "스폿스폿 !", NMapPOIflagType.PIN, 0);
+//        }
         poiData.endPOIdata();
 
         NMapPOIdataOverlay poiDataOverlay = mapOverlayManager.createPOIdataOverlay(poiData, null);

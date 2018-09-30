@@ -67,6 +67,8 @@ import ai.api.model.Metadata;
 import ai.api.model.Result;
 import ai.api.model.Status;
 
+import static java.lang.Thread.*;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String TAG = MainActivity.class.getName();
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private User myAccount;
     private User droidKaigiBot;
     private GPSTracker gps;
-    private String speech, position_cd, nanum_so_code, nanum_so_allCnt, nanum_so_cnt, nanum_gr_code, nanum_gr_allCnt, nanum_gr_cnt;
+    private String speech, position_cd, nanum_so_code, nanum_so_allCnt, nanum_so_cnt, nanum_gr_code, nanum_gr_allCnt, nanum_gr_cnt, addr;
     private double lat, lng, lat1, lat2, lat3, lng1, lng2, lng3;
 
     private TextView txtLat;
@@ -300,18 +302,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
                     Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
                     Log.i(TAG, "Speech3(location.position_cd): " + speechList[3]);
-                    speech = "현재 위치에서 가장 가까운 주차장의 주소는 " + speechList[0] + "입니다. 해당 주차장 정보를 보시려면 \"실시간 현황\"이라고 입력해주세요.";
+                    Log.i(TAG, "Speech4(location.adres): " + speechList[4]);
+                    speech = speechList[0];
                     lat = Double.parseDouble(speechList[1]);
                     lng = Double.parseDouble(speechList[2]);
                     position_cd = speechList[3];
+                    addr = speechList[4];
 
-                    final Message receivedMessage = new Message.Builder()
+                    Message receivedMessage = new Message.Builder()
                             .setUser(droidKaigiBot)
                             .setRightMessage(false)
                             .setMessageText(speech)
                             .build();
                     chatView.receive(receivedMessage);
+
+                    receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText("지도로 이동하여 표시합니다...")
+                            .build();
+                    chatView.receive(receivedMessage);
                     //add map
+                    String value = lat+";"+lng+";"+addr;
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
                 }
 
                 if(metadata.getIntentName().equals("top3_closest")) {
@@ -321,18 +335,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
                     Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
                     Log.i(TAG, "Speech3(location.position_cd): " + speechList[3]);
+                    Log.i(TAG, "Speech4(location.adres): " + speechList[4]);
                     speech = speechList[0];
                     lat = Double.parseDouble(speechList[1]);
                     lng = Double.parseDouble(speechList[2]);
                     position_cd = speechList[3];
+                    addr = speechList[4];
 
-                    final Message receivedMessage = new Message.Builder()
+                    Message receivedMessage = new Message.Builder()
                             .setUser(droidKaigiBot)
                             .setRightMessage(false)
                             .setMessageText(speech)
                             .build();
                     chatView.receive(receivedMessage);
+
+                    receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText("지도로 이동하여 표시합니다...")
+                            .build();
+                    chatView.receive(receivedMessage);
                     //add map
+                    String value = lat+";"+lng+";"+addr;
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
                 }
 
                 if(metadata.getIntentName().equals("top3")) {
@@ -345,6 +371,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "Speech4(location2.lng): " + speechList[4]);
                     Log.i(TAG, "Speech5(location3.lat): " + speechList[5]);
                     Log.i(TAG, "Speech6(location3.lng): " + speechList[6]);
+                    Log.i(TAG, "Speech7(location1.adres): " + speechList[7]);
+                    Log.i(TAG, "Speech8(location2.adres): " + speechList[8]);
+                    Log.i(TAG, "Speech9(location3.adres): " + speechList[9]);
                     speech = speechList[0];
                     lat1 = Double.parseDouble(speechList[1]);
                     lng1 = Double.parseDouble(speechList[2]);
@@ -352,13 +381,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     lng2 = Double.parseDouble(speechList[4]);
                     lat3 = Double.parseDouble(speechList[5]);
                     lng3 = Double.parseDouble(speechList[6]);
+                    String addr1 = speechList[7];
+                    String addr2 = speechList[8];
+                    String addr3 = speechList[9];
 
-                    final Message receivedMessage = new Message.Builder()
+                    Message receivedMessage = new Message.Builder()
                             .setUser(droidKaigiBot)
                             .setRightMessage(false)
                             .setMessageText(speech)
                             .build();
                     chatView.receive(receivedMessage);
+
+                    receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText("지도로 이동하여 표시합니다...")
+                            .build();
+                    chatView.receive(receivedMessage);
+                    //add map
+                    String value = lat1+";"+lng1+";"+lat2+";"+lng2+";"+lat3+";"+lng3+";"+addr1+";"+addr2+";"+addr3;
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info1", value);
+                    startActivity(intent);
                 }
 
                 if(metadata.getIntentName().equals("status")) {
@@ -392,18 +435,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
                     Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
                     Log.i(TAG, "Speech3(location.position_cd): " + speechList[3]);
+                    Log.i(TAG, "Speech4(location.adres): " + speechList[4]);
                     speech = speechList[0];
                     lat = Double.parseDouble(speechList[1]);
                     lng = Double.parseDouble(speechList[2]);
                     position_cd = speechList[3];
+                    addr = speechList[4];
 
-                    final Message receivedMessage = new Message.Builder()
+                    Message receivedMessage = new Message.Builder()
                             .setUser(droidKaigiBot)
                             .setRightMessage(false)
                             .setMessageText(speech)
                             .build();
                     chatView.receive(receivedMessage);
+
+                    receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText("지도로 이동하여 표시합니다...")
+                            .build();
+                    chatView.receive(receivedMessage);
                     //add map
+                    String value = lat+";"+lng+";"+addr;
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
                 }
 
                 if(metadata.getIntentName().equals("spec_agency")){
@@ -413,18 +468,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
                     Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
                     Log.i(TAG, "Speech3(location.position_cd): " + speechList[3]);
+                    Log.i(TAG, "Speech4(location.adres): " + speechList[4]);
                     speech = speechList[0];
                     lat = Double.parseDouble(speechList[1]);
                     lng = Double.parseDouble(speechList[2]);
                     position_cd = speechList[3];
+                    addr = speechList[4];
 
-                    final Message receivedMessage = new Message.Builder()
+                    Message receivedMessage = new Message.Builder()
                             .setUser(droidKaigiBot)
                             .setRightMessage(false)
                             .setMessageText(speech)
                             .build();
                     chatView.receive(receivedMessage);
+
+                    receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText("지도로 이동하여 표시합니다...")
+                            .build();
+                    chatView.receive(receivedMessage);
                     //add map
+                    String value = lat+";"+lng+";"+addr;
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
                 }
 
                 if(metadata.getIntentName().equals("closest_EVcharge")){
@@ -433,17 +500,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "Speech0(msg): " + speechList[0]);
                     Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
                     Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
+                    Log.i(TAG, "Speech3(location.name): " + speechList[3]);
                     speech = speechList[0]+" 지도로 이동하여 표시합니다...";
                     lat = Double.parseDouble(speechList[1]);
                     lng = Double.parseDouble(speechList[2]);
+                    addr = speechList[3];
 
-                    final Message receivedMessage = new Message.Builder()
+                    Message receivedMessage = new Message.Builder()
                             .setUser(droidKaigiBot)
                             .setRightMessage(false)
                             .setMessageText(speech)
                             .build();
                     chatView.receive(receivedMessage);
+
+                    receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText("지도로 이동하여 표시합니다...")
+                            .build();
+                    chatView.receive(receivedMessage);
                     //add map
+                    String value = lat+";"+lng+";"+addr;
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
                 }
 
                 if(metadata.getIntentName().equals("search_toilet")) {
@@ -453,51 +532,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
                     Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
                     speech = speechList[0];
-                    lat = Double.parseDouble(speechList[1]);
-                    lng = Double.parseDouble(speechList[2]);
-
-                    String value = lat+";"+lng;
-                    Message receivedMessage = new Message.Builder()
-                            .setUser(droidKaigiBot)
-                            .setRightMessage(false)
-                            .setMessageText(speech)
-                            .build();
-                    chatView.receive(receivedMessage);
-                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
-                    startActivity(intent);
-                    //add map
-                }
-
-                if(metadata.getIntentName().equals("closest_park1")){
-                    final String[] speechList = speech.split(";");
-                    Log.i(TAG, "intent name: " + metadata.getIntentName());
-                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
-                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
-                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
-                    Log.i(TAG, "Speech3(location.name): " + speechList[3]);
-                    Log.i(TAG, "Speech4(location.etc): " + speechList[4]);
-                    speech = speechList[0] +" 주차장 이름: "+ speechList[3]+" , 정보: " + speechList[4];
-                    lat = Double.parseDouble(speechList[1]);
-                    lng = Double.parseDouble(speechList[2]);
-
-                    final Message receivedMessage = new Message.Builder()
-                            .setUser(droidKaigiBot)
-                            .setRightMessage(false)
-                            .setMessageText(speech)
-                            .build();
-                    chatView.receive(receivedMessage);
-                    //add map
-                }
-
-                if(metadata.getIntentName().equals("closest_park0")){
-                    final String[] speechList = speech.split(";");
-                    Log.i(TAG, "intent name: " + metadata.getIntentName());
-                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
-                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
-                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
-                    Log.i(TAG, "Speech3(location.name): " + speechList[3]);
-                    Log.i(TAG, "Speech4(location.msg2): " + speechList[4]);
-                    speech = speechList[0] +" "+ speechList[4];
                     lat = Double.parseDouble(speechList[1]);
                     lng = Double.parseDouble(speechList[2]);
 
@@ -514,8 +548,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setMessageText("지도로 이동하여 표시합니다...")
                             .build();
                     chatView.receive(receivedMessage);
-
                     //add map
+                    String value = lat+";"+lng+";"+"가장 가까운 화장실";
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
+                }
+
+                if(metadata.getIntentName().equals("closest_park1")){
+                    final String[] speechList = speech.split(";");
+                    Log.i(TAG, "intent name: " + metadata.getIntentName());
+                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
+                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
+                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
+                    Log.i(TAG, "Speech3(location.name): " + speechList[3]);
+                    Log.i(TAG, "Speech4(location.etc): " + speechList[4]);
+                    speech = speechList[0] +" 주차장 이름: "+ speechList[3]+" , 정보: " + speechList[4];
+                    lat = Double.parseDouble(speechList[1]);
+                    lng = Double.parseDouble(speechList[2]);
+                    addr = speechList[3];
+
+                    Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+
+                    receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText("지도로 이동하여 표시합니다...")
+                            .build();
+                    chatView.receive(receivedMessage);
+                    //add map
+                    String value = lat+";"+lng+";"+addr;
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
+                }
+
+                if(metadata.getIntentName().equals("closest_park0")){
+                    final String[] speechList = speech.split(";");
+                    Log.i(TAG, "intent name: " + metadata.getIntentName());
+                    Log.i(TAG, "Speech0(msg): " + speechList[0]);
+                    Log.i(TAG, "Speech1(location.lat): " + speechList[1]);
+                    Log.i(TAG, "Speech2(location.lng): " + speechList[2]);
+                    Log.i(TAG, "Speech3(location.name): " + speechList[3]);
+                    Log.i(TAG, "Speech4(location.msg2): " + speechList[4]);
+                    speech = speechList[0] +" "+ speechList[4];
+                    lat = Double.parseDouble(speechList[1]);
+                    lng = Double.parseDouble(speechList[2]);
+                    addr = speechList[3];
+
+                    Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+
+                    receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText("지도로 이동하여 표시합니다...")
+                            .build();
+                    chatView.receive(receivedMessage);
+                    //add map
+                    String value = lat+";"+lng+";"+addr;
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
                 }
             }
         });
