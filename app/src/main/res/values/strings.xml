@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">나눔이</string>
+    <string name="str_done">완료</string>
+    <string name="NAVER_API_KEY">n7AHSzZ7rbcixSSSEgEz</string>
+    <string name="title_activity_maps">Map</string>
+
+</resources>

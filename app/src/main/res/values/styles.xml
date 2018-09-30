@@ -1,0 +1,21 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/chatcolor</item>
+        <item name="colorPrimaryDark">@color/chatviewcolor</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="textColorPrimary">@color/chatcolor</item>-->
+        <item name="colorControlNormal">@color/chatcolor</item>
+        <item name="colorControlActivated">@color/chatcolor</item>
+        <item name="android:textCursorDrawable">@color/chatcolor</item>
+        <item name="android:textColorHint">@color/teal500</item>
+        <item name="android:editTextBackground">@color/colorSendBox</item>
+
+    </style>
+    <style name="Splash" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/circle</item>
+    </style>
+
+</resources>
