@@ -405,11 +405,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 if(metadata.getIntentName().equals("status")) {
-                    String url_so = "http://openapi.seoul.go.kr:8088/sample/xml/NanumcarCarList/1/5/"+position_cd+"/so";
+                    String url_so = "http://openapi.seoul.go.kr:8088/6568456d4768727031303062546a4643/xml/NanumcarCarList/1/5/"+position_cd+"/so";
                     NetworkTask networkTask = new NetworkTask(url_so, null, "socar");
                     networkTask.execute();
 
-                    String url_gr = "http://openapi.seoul.go.kr:8088/sample/xml/NanumcarCarList/1/5/"+position_cd+"/gr";
+                    String url_gr = "http://openapi.seoul.go.kr:8088/6568456d4768727031303062546a4643/xml/NanumcarCarList/1/5/"+position_cd+"/gr";
                     NetworkTask networkTask2 = new NetworkTask(url_gr, null, "gr");
                     try {
                         networkTask2.execute().get();
@@ -617,6 +617,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
                     startActivity(intent);
                 }
+                if(!metadata.getIntentName().equals("closest_park0") && !metadata.getIntentName().equals("closest_park1") && !metadata.getIntentName().equals("search_toilet")&&
+                !metadata.getIntentName().equals("closest_EVcharge")&&!metadata.getIntentName().equals("spec_agency")&&!metadata.getIntentName().equals("spec_electric")&&
+                !metadata.getIntentName().equals("spec_addr")&&!metadata.getIntentName().equals("top3")&&!metadata.getIntentName().equals("top3_closest")&&!metadata.getIntentName().equals("closest")){
+                    Message receivedMessage = new Message.Builder()
+                            .setUser(droidKaigiBot)
+                            .setRightMessage(false)
+                            .setMessageText(speech)
+                            .build();
+                    chatView.receive(receivedMessage);
+                }
             }
         });
     }
@@ -639,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         int botId = 1;
-        String botName = "해치";
+        String botName = "나누미";
         droidKaigiBot = new User(botId, botName, icon2);
 
         chatView = findViewById(R.id.chat_view);
@@ -734,9 +744,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .build();
                     chatView.receive(receivedMessage);
                 }
-            }
-
-            if(type.equals("gr")) {
+            } else if(type.equals("gr")) {
                 NodeList resList = doc.getElementsByTagName("RESULT");
                 Node resNode = resList.item(0);
                 Element resElmt = (Element) resNode;
@@ -794,6 +802,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .build();
                     chatView.receive(receivedMessage);
                     //add map
+                    String value = lat_+";"+lng_;
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class).putExtra("info", value);
+                    startActivity(intent);
                 } else {
                     speech = "그런 장소는 찾지 못했어요 ㅠㅠ... 다시 입력해주세요 !";
                     final Message receivedMessage = new Message.Builder()

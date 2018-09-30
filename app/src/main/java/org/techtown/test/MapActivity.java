@@ -87,6 +87,7 @@ public class MapActivity extends NMapActivity
         super.onStart();
         mMapView.setBuiltInZoomControls(true, null);
         mMapView.setOnMapStateChangeListener(this);
+        mMapView.setScalingFactor(2.0f);
         moveMapCenter();
     }
 
